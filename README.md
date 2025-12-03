@@ -11,10 +11,9 @@ The idea is not just to store notes, but to provide a structured guide that enab
 - Understand how Kubernetes behaves when running inside AWS, especially in terms of scalability, availability, and infrastructure integration
 
 
-
 # 🏗️ Architecture Overview
 
-## EKS 
+## EKS overview
 When working with Kubernetes, we rely on a cluster to provide the underlying infrastructure required to run and manage containerized applications.
 In a traditional on-premises setup, I would be responsible for provisioning and maintaining these elements manually. 
 
@@ -33,18 +32,18 @@ In this test environment, I will use Minikube to simulate a Kubernetes cluster i
 
 Without Minikube, I would need to provision multiple EC2 instances, configure them as Kubernetes nodes, and manage all the required infrastructure myself — something that only makes sense later, when moving to a real EKS production environment.
 
+### Minikube: Local vs Virtual
+When running Minikube on a local machine, a virtualization layer is required—typically something like VirtualBox. However, when using a virtualized environment such as an EC2 instance, an additional hypervisor is not needed, because the instance already provides the underlying virtualization required for Minikube's nodes.
+
+
 ---
 # Testing :
 
 ## testing enviroment overview : 
-- create a EC2 instance
-- install Kubectl, Docker and  Minikube.
--
--
-
-
-
-
+- Create a EC2 instance
+- Kubectl  
+- Install Docker
+- Install Minikube
 
 ## 🖥️ Create a EC2 Instance
 1️⃣ Access the AWS Console:
@@ -66,8 +65,7 @@ The t3.small offers 2 GB RAM, which is enough for this setup.
 
 Note: The t3.small costs roughly twice as much as a t2.micro, but since this instance is for development and not running 24/7, the monthly cost remains low.
 
-
-3
+3️⃣ Connect to the instance:
 
 Open an SSH client. (If using Windows, you may use PuTTY or another SSH tool.)
 Locate your private key file (.pem) used when launching the instance.
@@ -79,21 +77,15 @@ Connect to your instance using its Public DNS or Public IP. Use the appropriate 
 
 ``` ssh -i "<your-key-file>.pem" <username>@<public-dns-or-ip>``` 
 
-example : 
-
-``` ssh -i "mykey.pem" ubuntu@ec2-xx-xxx-xxx-xxx.compute-1.amazonaws.com ```
-
- or
-
- ``` ssh -i "mykey.pem" ec2-user@11.22.33.44 ```
-
 ## 🖥️ Install Kubectl
+Must be inside the instance:
 
 Linux: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 Windows: https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
 
-```
+```bash
+
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 
 chmod +x ./kubectl
@@ -102,5 +94,41 @@ sudo mv ./kubectl /usr/local/bin/
 
 kubectl help  
 ```
-  
+
+## 🖥️ Install Docker
+
+apt-get : Usually the most convenient option because it resolves dependencies automatically and integrates with the OS package manager.
+
+```bash
+sudo apt-get update
+sudo apt-get install docker.io -y
+```
+OR 
+
+ Curl : Works on almost any Linux distribution, but does not manage dependencies by itself.
+
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+```
+
+## 🖥️ Install Minikube
+
+https://minikube.sigs.k8s.io/docs/start/
+
+1️⃣ Install
+
+```bash
+curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+```
+
+
+2️⃣ Start
+
+```bash
+minikube start --driver=docker
+```
+
+> --driver= None  must NOT be used in production !!! 
+This mode is intended exclusively for testing, development, or learning environments. In this configuration, Kubernetes components run directly on the host with elevated privileges, which can introduce security and stability risks.
 

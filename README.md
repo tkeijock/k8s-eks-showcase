@@ -122,13 +122,25 @@ curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikub
 sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
 ```
 
-
 2️⃣ Start
 
 ```bash
 minikube start --driver=docker
+minikube status
 ```
 
-> --driver= None  must NOT be used in production !!! 
+Always start Minikube without sudo. Running it with elevated privileges causes configuration files to be created under /root, leading to permission issues and extra steps to fix them.
+
+ --driver= None  must NOT be used in production !!! 
 This mode is intended exclusively for testing, development, or learning environments. In this configuration, Kubernetes components run directly on the host with elevated privileges, which can introduce security and stability risks.
+
+3️⃣ Test minikube :
+Create a Deployment and a NodePort Service to expose the application outside the cluster.
+```bash
+kubectl create deployment hello-minikube --image=gcr.io/google_containers/echoserver:1.4
+kubectl expose deployment hello-minikube --type=NodePort --port=8080
+
+kubectl get services  # verify which ports are exposed externally. Ex: 8080 : 30280
+```
+
 

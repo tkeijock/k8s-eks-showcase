@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master
+  labels:
+    app: demo-dashboard
+    component: redis-master
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-dashboard
+      component: redis-master
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: demo-dashboard
+        component: redis-master
+        tier: backend
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: redis-master
+          image: redis:7.2  # Redis image version
+          ports:
+            - containerPort: 6379  # Default Redis port
+          
+          # Basic TCP health checks to ensure Redis is running and responding
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10

@@ -25,6 +25,11 @@ AWS removes that operational burden through EKS by provisioning a fully managed 
 
 In essence, EKS provides Kubernetes with cloud-grade reliability, where EC2 instances act as worker nodes that I can manage directly through kubectl.
 
+## Development → Production Flow
+
+Before deploying anything to EKS, we first need a running machine with Minikube installed to serve as our development environment.
+This environment allows us to test and validate the application locally before promoting it to a production-grade Kubernetes cluster.
+
 ## EKS vs Minikube 
 Minikube provides a lightweight, local Kubernetes cluster that runs inside a single virtual machine. It does not create multiple virtual machines, nor multiple physical nodes . Instead, it simulates a Kubernetes cluster by running all core components (control plane + worker node) on the same machine (the nodes are logical, not separate machines).
 
@@ -37,9 +42,9 @@ When running Minikube on a local machine, a virtualization layer is required—t
 
 
 ---
-# Testing :
+# Dev enviroment : provisioning
 
-## testing enviroment overview : 
+## overview : 
 - Create a EC2 instance
 - Kubectl  
 - Install Docker
@@ -137,10 +142,31 @@ This mode is intended exclusively for testing, development, or learning environm
 3️⃣ Test minikube :
 Create a Deployment and a NodePort Service to expose the application outside the cluster.
 ```bash
-kubectl create deployment hello-minikube --image=gcr.io/google_containers/echoserver:1.4
-kubectl expose deployment hello-minikube --type=NodePort --port=8080
+kubectl create deployment hello-minikube --image=kicbase/echo-server:1.0
+kubectl expose deployment hello-minikube --type=NodePort --port=80 --node-port=30080  # Open port 80 on container and port 30080 on all nodes 
 
-kubectl get services  # verify which ports are exposed externally. Ex: 8080 : 30280
+kubectl port-forward service/hello-minikube 7080:80 # creates forwarding from local host machine to the service inside the cluster
+#http://localhost:7080/
 ```
+
+## 🖥️ Configure AWS Security group
+Create a security group on aws with  same port on the above command "--node-port=30080" :
+- Custom TCP rule
+- port range = 30080
+- Source = My IP
+
+Associate it to the EC2: Actions > Networking > change security group
+
+Acess EC2 on the browser: 
+
+```<instance-public-dns-adress>:30080```
+
+---
+
+# Dev enviroment : App deploy
+
+The demo application is a simple Dashboard that uses Redis as its backend storage layer. This application is interesting because it naturally creates multiple components — a Redis Master, a Redis Slave, and a Front-end — giving us a realistic multi-container scenario inside Kubernetes. This structure allows us to experiment with deployments, services, and inter-component communication in a way that resembles a real production environment. The goal isn’t to build or improve the application itself, but to use it as a lightweight, practical example while I focus on Kubernetes deployments, service exposure, port and connectivity testing, and validating the full development-to-production workflow.
+
+
 
 

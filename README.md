@@ -10,38 +10,46 @@ All configurations are first validated in a lightweight local cluster using Mini
 
 ## EKS overview
 
-When working with Kubernetes, we rely on a cluster to provide the underlying infrastructure required to run and manage containerized applications.
-In a traditional on-premises setup, provisioning and maintaining this infrastructure manually is time-consuming and operationally heavy. 
+When working with Kubernetes, we rely on a cluster to provide the underlying infrastructure required to run and manage containerized applications. In a traditional on-premises setup, provisioning and maintaining this infrastructure manually is time-consuming and operationally heavy.
 
-AWS EKS removes that burden by providing a fully managed Kubernetes control plane, while EC2 instances serve as scalable and highly available worker nodes that I manage directly through kubectl commands.
+AWS EKS removes that burden by providing a fully managed Kubernetes control plane, while EC2 instances serve as scalable and highly available worker nodes that I manage directly through kubectl.
 
-Although the main goal of this repository is to deploy a real application to EKS, every configuration is first validated in a lightweight local Kubernetes cluster using Minikube.
-This approach allows me to test manifests, networking, service exposure, and component interactions before moving to a production-grade environment in AWS.
+Although the goal of this repository is to deploy a real application to EKS, all manifests are validated in a lightweight local Kubernetes cluster beforehand to ensure correctness before reaching the cloud environment.
 
 ## Development → Production Flow
 
-To avoid deploying untested configurations directly into EKS, I use Minikube as my local development environment.
-Minikube runs a complete Kubernetes cluster inside a single virtual machine, combining the control plane and worker node into one environment. This makes it ideal for experimentation, debugging, and early validation of deployments and services.
+To perform safe and iterative testing, Minikube is used as the first step of the deployment workflow. It provides a full Kubernetes cluster inside a single virtual machine, making it ideal for rapid experimentation, debugging, and early validation of deployments and service behavior.
 
-In this project, Minikube runs inside a single EC2 instance. Since the instance itself is already virtualized, no additional hypervisor (such as VirtualBox) is needed.
-Using Minikube prevents the overhead of provisioning multiple EC2 instances to manually configure them as Kubernetes nodes to form a cluster — an effort that only becomes necessary when progressing to a real EKS deployment.
+In this project, Minikube runs directly on an EC2 instance. Since the instance itself is already virtualized, no additional hypervisor is required. This setup enables testing Kubernetes components in a controlled, cloud-based environment without the overhead provisioning multiple EC2 instances to form a multi-node cluster — something only necessary once transitioning to EKS.
 
 ## Demo Application Overview
 
-The demo application is a simple Dashboard that uses Redis as its backend storage layer. 
-This application is interesting because it naturally creates multiple components — a Redis Master, a Redis Slave, and a Front-end — giving us a realistic multi-container scenario inside Kubernetes.
+This repository contains a lightweight demo application used to practice Kubernetes concepts in a realistic, multi-component environment.
 
-This structure allows us to experiment with deployments, services, and inter-component communication in a way that resembles a real production environment. The goal isn’t to build or improve the application itself, but to use it as a lightweight, practical example while I focus on Kubernetes deployments, service exposure, port and connectivity testing, and validating the full development-to-production workflow.
+The application consists of three parts deployment — a Frontend, a Redis Leader, and a Redis Follower — which provides a practical scenario for exploring deployments, services, DNS-based communication, and testing multi-pod interactions.
 
-This structure allows us to experiment with deployments, services, and inter-component communication in a way that resembles a real production environment.  
-The goal isn’t to build or improve the application itself, but to use it as a lightweight, practical example while I focus on Kubernetes deployments, service exposure, port and connectivity testing, and validating the full development-to-production workflow.
+The goal here is not to develop or enhance the application itself. Instead, this project serves as a hands-on learning environment where I experiment with:
+
+- Kubernetes deployments and service exposure
+
+- Internal networking and pod-to-pod communication
+
+- Port testing and connectivity validation
+
+- Development-to-production workflow simulation
+
+This setup gives us a structure that resembles a production environment while keeping everything lightweight and easy to reproduce.
+
+For details on how this application is deployed in a cloud-aligned development environment, including Minikube inside EC2 and subsequent validation before moving to AWS EKS, see the deployment guide:
+
+👉 docs/deployment.md
 
 ---
 This repository is organized into separate guides to keep the workflow clear and structured:
 
-- **Environment Setup (EC2, Docker, Kubectl, Minikube)**  
+- ** Dev: Environment Setup (EC2, Docker, Kubectl, Minikube)**  
   👉 [docs/01-environment-setup.md](docs/01-environment-setup.md)
-- **Demo Application Deployment (Redis + Dashboard)**  
+- **Dev: Demo Application Deployment (Redis + Dashboard)**  
   👉 [docs/02-demo-app-deploy.md](docs/02-demo-app-deploy.md)
 
 

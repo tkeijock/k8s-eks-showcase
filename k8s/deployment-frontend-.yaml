@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    component: php-redis
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: guestbook
+      component: php-redis
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        component: php-redis
+        tier: frontend
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: php-redis
+          image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns  # Use 'env' se cluster não tiver DNS
+          ports:
+            - containerPort: 80

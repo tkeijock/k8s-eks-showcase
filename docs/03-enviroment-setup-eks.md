@@ -63,5 +63,60 @@ Cloud formation just need the template file that can be found here:
 
 I used this template: [IPv4 VPC template](https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml)
 
+Create the VPC with a name and save it. ex: **VPC-K8S**
 
-3️⃣ 
+3️⃣ EKS cluster
+
+Simple option using UI: Inside EKS service > create EKS cluster 
+
+using two factor authnetication can cause some problems while creating direclty so it is better to use AWS CLI :
+
+The Amazon Resource Name (ARN) from the IAM Role that we created is required to create a clsuter.
+The ARN is the globally unique identifier of the IAM role in AWS. Here is saved in the variable ```ROLE_ARN ```.
+
+```
+ROLE_ARN=$(aws iam get-role --role-name MyRole --query "Role.Arn" --output text)
+```
+
+Then  need to define the VPC resources using the VPC name and subnets.
+
+```
+# check VPC ID by the TAG name 
+VPC_ID=$(aws ec2 describe-vpcs \
+    --filters "Name=tag:Name,Values=VPC-K8S" \
+    --query "Vpcs[0].VpcId" \
+    --output text)
+
+#echo "VPC ID: $VPC_ID"
+
+# Public Subnets
+PUBLIC_SUBNETS=($(aws ec2 describe-subnets \
+    --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Public,Values=true" \
+    --query "Subnets[*].SubnetId" \
+    --output text))
+
+# Private Subnets
+PRIVATE_SUBNETS=($(aws ec2 describe-subnets \
+    --filters "Name=vpc-id,Values=$VPC_ID" "Name=tag:Private,Values=true" \
+    --query "Subnets[*].SubnetId" \
+    --output text))
+
+# Check subnets
+#echo "Public subnets: ${PUBLIC_SUBNETS[@]}"
+#echo "Private subnets: ${PRIVATE_SUBNETS[@]}"
+
+# Join All subnets
+subnetIds=$(IFS=,; echo "${PUBLIC_SUBNETS[*]},${PRIVATE_SUBNETS[*]}")
+#echo $subnetIds
+
+SECURITY_GROUP=$(aws ec2 describe-security-groups \
+    --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default \
+    --query "SecurityGroups[0].GroupId" --output text)
+
+```
+
+Create cluster command:
+```
+aws eks create-cluster --name my-cluster --role-arn $ROLE_ARN --resources-vpc-config subnetIds=$subnetIds, securityGroupIds=$SECURITY_GROUP
+```
+it can take around 12 min to create a cluster.

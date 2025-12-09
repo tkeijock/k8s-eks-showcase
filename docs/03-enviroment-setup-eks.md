@@ -111,3 +111,10 @@ aws eks describe-cluster --name my-cluster | grep status
 To interact with the EKS cluster from my local machine, I used the AWS IAM Authenticator. This tool allows kubectl to authenticate with the cluster using IAM credentials, ensuring that access is securely managed according to the IAM roles and policies I configured. With the authenticator, I can run Kubernetes commands locally without needing static kubeconfig certificates, and the permissions are automatically aligned with the IAM role associated with my user or session.
 
  [AWS IAM Authenticator Github Repository](https://github.com/kubernetes-sigs/aws-iam-authenticator)
+ [AWS instructions on how to use IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
+
+ ```
+curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator
+chmod +x aws-iam-authenticator
+cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+```

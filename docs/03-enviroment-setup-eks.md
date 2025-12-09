@@ -38,7 +38,7 @@ As a best practice, you should always update kubectl whenever you upgrade your E
 consult eks versions on : https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
 
 
-# EKS 
+# EKS initialization
 
 ## 1️⃣ IAM 
 
@@ -65,7 +65,7 @@ I used this template: [IPv4 VPC template](https://s3.us-west-2.amazonaws.com/ama
 
 Create the VPC with a name and save it. ex: **VPC-K8S**
 
-## 3️⃣ EKS cluster
+## 3️⃣ Creating EKS cluster
 
 Creating an EKS cluster via the AWS Management Console (UI) requires an IAM user and may enforce MFA (Multi-Factor Authentication) depending on account policies. If MFA wasn’t properly configured or my account had strict IAM policies, certain actions—like creating a cluster—could fail due to insufficient permissions or missing MFA tokens. Using the AWS CLI allowed me to leverage configured profiles or temporary credentials, bypassing some of these issues and enabling smoother automation.
 
@@ -95,4 +95,19 @@ aws eks create-cluster --name my-cluster --role-arn $ROLE_ARN --resources-vpc-co
 - **Kubernetes version**: If you don't pass `--kubernetes-version`, EKS creates the cluster using the latest default version available in AWS.  
   To see the available versions: `aws eks list-kubernetes-versions --region <your-region>`
 
-it can take around 12 min to create a cluster.
+it can take around 12 ~ 15 min to create a cluster.
+
+
+## 4  Checking cluster 
+usefull commands
+
+```
+aws eks list-cluster
+aws eks describe-cluster --name my-cluster | grep status
+```
+
+# EKS Operation
+
+To interact with the EKS cluster from my local machine, I used the AWS IAM Authenticator. This tool allows kubectl to authenticate with the cluster using IAM credentials, ensuring that access is securely managed according to the IAM roles and policies I configured. With the authenticator, I can run Kubernetes commands locally without needing static kubeconfig certificates, and the permissions are automatically aligned with the IAM role associated with my user or session.
+
+ [AWS IAM Authenticator Github Repository](https://github.com/kubernetes-sigs/aws-iam-authenticator)

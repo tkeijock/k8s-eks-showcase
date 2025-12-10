@@ -30,6 +30,9 @@ SECURITY_GROUP=$(aws ec2 describe-security-groups \
     --filters Name=vpc-id,Values=$VPC_ID Name=group-name,Values=default \
     --query "SecurityGroups[0].GroupId" --output text)
 
-# Create cluster 
-# aws eks create-cluster --role-arn $ROLE_ARN --resources-vpc-config subnetIds=$subnetIds,securityGroupIds=$SECURITY_GROUP
+## Create cluster 
+# aws eks create-cluster \
+#  --name my-cluster \
+#  --role-arn $ROLE_ARN \
+#  --resources-vpc-config subnetIds=$subnetIds,securityGroupIds=$SECURITY_GROUP
 

@@ -3,28 +3,23 @@ This document is part of a multi-file repository. Earlier steps used Minikube on
 
 # EKS Local Access – Technical Overview
 
-This project demonstrates how to manage an Amazon EKS cluster from a local Linux machine using IAM-based authentication.
+This section demonstrates how to access and manage an Amazon EKS cluster from a local Linux machine using IAM-based authentication.
 
-Covered concepts and responsibilities:
+Key concepts covered:
 
-✅ Local Linux environment prepared for Kubernetes operations
+- Local Linux environment prepared for Kubernetes
 
-✅ AWS CLI installed with full EKS support
+- AWS CLI and kubectl installed and compatible
 
-✅ kubectl installed and version-aligned with the cluster
+- IAM roles and policies for EKS access
 
-✅ IAM roles and policies configured for EKS control-plane access
+- Dedicated VPC provisioned before cluster creation
 
-✅ Dedicated VPC provisioned before cluster creation
+- EKS cluster created via AWS CLI
 
-✅ EKS cluster created using AWS CLI (not UI)
+- kubeconfig generation for remote access
 
-✅ Cluster validation and lifecycle checks
-
-✅ kubeconfig generated via aws eks update-kubeconfig
-
-✅ End-to-end authentication flow:
-Local IAM credentials → temporary token → EKS API server
+- IAM → token → EKS API authentication flow
 
 ---
 
@@ -80,7 +75,6 @@ Required Policies:
 
 - AmazonEKSServicePolicy
 
-
 ### 2️⃣ Cloud formation 
 
 An Amazon EKS cluster requires a VPC as its underlying networking layer, and  EKS does not create networking resources by default; a VPC must exist beforehand. Also, AWS recommends using a dedicated VPC for EKS to ensure proper isolation and predictable networking behavior.
@@ -129,42 +123,55 @@ aws eks create-cluster \
 it can take around 12 ~ 15 min to create a cluster.
 
 
-### 4️⃣  Checking cluster 
-useful commands
+### 4️⃣ Checking cluster status
+
+After creating the cluster, verify that it is active:
 
 ```
-aws eks list-cluster
+aws eks list-clusters
 aws eks describe-cluster --name my-cluster | grep status
 ```
-After the cluster status becomes ACTIVE, run:
+Proceed only when the cluster status is ACTIVE.
 
-The ```aws eks update-kubeconfig --name <cluster-name>``` command updates the local kubeconfig file so that kubectl can connect to the EKS cluster using IAM-based authentication.
+5️⃣ Configure local kubeconfig (one-time setup)
 
+Once the cluster is active, configure local access for kubectl:
+
+```aws eks update-kubeconfig --name <cluster-name>```
+
+This command updates the local kubeconfig file (~/.kube/config) with:
+
+- The EKS API endpoint
+
+- The cluster CA certificate
+
+- The authentication method based on AWS IAM
+
+⚠️ This command does not authenticate to the cluster. It only  updates the local kubeconfig file so that ```kubectl``` can connect to the EKS cluster.
+
+
+Each time you run a `kubectl` command (for example, `kubectl get nodes`), Kubernetes automatically invokes `aws eks get-token`.  
+The AWS CLI then uses local IAM credentials to generate a temporary authentication token, which is used to securely authenticate the request against the EKS API server.
 
 # EKS Remote control
 
-To allow ```kubectl``` running on the local machine to access the EKS cluster API, IAM-based authentication is required.
-In modern setups, the AWS CLI is the recommended approach, as it natively generates authentication tokens using ```aws eks get-token```.
+EKS access from a local machine is entirely based on IAM authentication.
+In modern environments, the AWS CLI is the recommended mechanism, as it natively generates authentication tokens via "aws eks get-token".
 
-Historically, this was handled by the standalone ```aws-iam-authenticator binary```. 
+Historically, this functionality was provided by the standalone ```aws-iam-authenticator``` binary.
 
 Both approaches use the same mechanism: local IAM credentials are exchanged for a temporary token to authenticate against the EKS API server.
 
-### AWS CLI vs aws-iam-authenticator
 
-Each time you run a ```kubectl``` command, it invokes the AWS CLI credential plugin, which generates a temporary IAM token. This token is then used to securely authenticate the request against the EKS API server.
-
-test with :  ```kubectl get nodes``` 
-
-### aws-iam-authenticator
+### aws-iam-authenticator details
 
 For compatibility with legacy clusters and existing automation, this repository also provides an optional script to install and configure ```aws-iam-authenticator```:
 
 [iam-authenticator-install.sh](https://github.com/tkeijock/k8s-eks-showcase/blob/main/scripts/iam-authenticator-install.sh)
 
- [AWS IAM Authenticator Github Repository](https://github.com/kubernetes-sigs/aws-iam-authenticator)
+[AWS IAM Authenticator Github Repository](https://github.com/kubernetes-sigs/aws-iam-authenticator)
 
- [AWS  EKS setup with instructions to setup IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
+[AWS  EKS setup with instructions to setup IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
 
 
 

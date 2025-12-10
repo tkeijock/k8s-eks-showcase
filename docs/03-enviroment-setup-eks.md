@@ -14,7 +14,7 @@ in this example i used: Ubuntu 18.04.01 LTS
 
 ### 2️⃣ AWS CLI Updated 
 
-Installation guide: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+[AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 Check your version with:
 
@@ -106,32 +106,22 @@ aws eks list-cluster
 aws eks describe-cluster --name my-cluster | grep status
 ```
 
-# EKS Operation
+# EKS Remote control
 
-To interact with the EKS cluster from my local machine, I used the AWS IAM Authenticator. This tool allows kubectl to authenticate with the cluster using IAM credentials, ensuring that access is securely managed according to the IAM roles and policies I configured. With the authenticator, I can run Kubernetes commands locally without needing static kubeconfig certificates, and the permissions are automatically aligned with the IAM role associated with my user or session.
+To allow ```kubectl``` on the local machine to interact with the EKS cluster a IAM-based authentication is required.
+
+In modern environments, the AWS CLI is the primary and recommended mechanism, as it natively generates authentication tokens using  teh command ```aws eks get-token```.
+
+Historically, this functionality was provided by the standalone ```aws-iam-authenticator``` binary, which performs the same token-generation step for kubectl.
+
+Both approaches rely on the same mechanism: local IAM credentials are used to obtain a temporary token that allows secure access to the EKS API server.
+
+As an alternative, this repository also includes a separate script to install and configure ```aws-iam-authenticator```. This option is provided for legacy clusters, existing automation scripts, corporate-standard environments, and educational materials that still rely on the standalone binary. The installation script is available here:
+
+
+👉[iam-authenticator-install.sh](https://github.com/tkeijock/k8s-eks-showcase/blob/main/scripts/iam-authenticator-install.sh)
 
  [AWS IAM Authenticator Github Repository](https://github.com/kubernetes-sigs/aws-iam-authenticator)
- [AWS instructions on how to use IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
+ [AWS  EKS setup with instructions to setup IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
 
- ```
-# Create ~/.local/bin if it doesn't exist
-mkdir -p "$HOME/.local/bin"
 
-# Download the aws-iam-authenticator binary to user's local bin
-curl -o "$HOME/.local/bin/aws-iam-authenticator" \
-  https://amazon-eks.s3-us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/aws-iam-authenticator
-
-# Make the binary executable
-chmod +x "$HOME/.local/bin/aws-iam-authenticator"
-
-# Add ~/.local/bin to PATH permanently if not already present
-grep -qxF 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc || \
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-
-# Apply the PATH change to the current session
-export PATH="$HOME/.local/bin:$PATH"
-
-# Verify installation
-aws-iam-authenticator help
-
-```

@@ -123,7 +123,7 @@ aws eks create-cluster \
 it can take around 12 ~ 15 min to create a cluster.
 
 
-### 4️⃣ Checking cluster status
+### 4️⃣ Check cluster status
 
 After creating the cluster, verify that it is active:
 
@@ -133,25 +133,23 @@ aws eks describe-cluster --name my-cluster | grep status
 ```
 Proceed only when the cluster status is ACTIVE.
 
-5️⃣ Configure local kubeconfig (one-time setup)
+5️⃣ Configure local Kubectl (one-time setup)
 
 Once the cluster is active, configure local access for kubectl:
 
 ```aws eks update-kubeconfig --name <cluster-name>```
 
-This command updates the local kubeconfig file (~/.kube/config) with:
-
-- The EKS API endpoint
-
-- The cluster CA certificate
-
-- The authentication method based on AWS IAM
+This command creates the pointer between  kubectl and the cluster. 
+in practical terms, it updates the local kubeconfig file (~/.kube/config) with  EKS API endpoint, the cluster CA certificate and authentication method based on AWS IAM.
 
 ⚠️ This command does not authenticate to the cluster. It only  updates the local kubeconfig file so that ```kubectl``` can connect to the EKS cluster.
 
-
-Each time you run a `kubectl` command (for example, `kubectl get nodes`), Kubernetes automatically invokes `aws eks get-token`.  
+> NOTE: Each time you run a `kubectl` command (for example, `kubectl get nodes`), Kubernetes automatically invokes `aws eks get-token`.  
 The AWS CLI then uses local IAM credentials to generate a temporary authentication token, which is used to securely authenticate the request against the EKS API server.
+
+6️⃣ Check Kubectl
+use on the local machine : 
+```kubectl get nodes  ``` 
 
 # EKS Remote control
 

@@ -1,9 +1,9 @@
-# Dev enviroment : provisioning
+# Local Enviroment Setup
 
 ## Minikube: Local vs Virtual
 When running Minikube on a local machine, a virtualization layer is required—typically something like VirtualBox. However, when using a virtualized environment such as an EC2 instance, an additional hypervisor is not needed, because the instance already provides the underlying virtualization required for Minikube's nodes.
 
-# overview : 
+## overview : 
 - Create a EC2 instance
 - Kubectl  
 - Install Docker

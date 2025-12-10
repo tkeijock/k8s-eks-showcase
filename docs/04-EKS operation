@@ -1,0 +1,6 @@
+EKS operation
+
+craete node with cloud formation 
+[AWS Nodes Yaml](https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-12-10/amazon-eks-nodegroup.yaml)
+
+Stack name= nodes-eks

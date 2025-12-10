@@ -1,8 +1,34 @@
-In the development environment, I used a single EC2 instance to run a Minikube cluster.
-Now, I will use my local machine to connect publicly to the EKS cluster.
+#  Context
+This document is part of a multi-file repository. Earlier steps used Minikube on EC2; this section focuses on accessing an Amazon EKS cluster from a local machine.
+
+# EKS Local Access – Technical Overview
+
+This project demonstrates how to manage an Amazon EKS cluster from a local Linux machine using IAM-based authentication.
+
+Covered concepts and responsibilities:
+
+✅ Local Linux environment prepared for Kubernetes operations
+
+✅ AWS CLI installed with full EKS support
+
+✅ kubectl installed and version-aligned with the cluster
+
+✅ IAM roles and policies configured for EKS control-plane access
+
+✅ Dedicated VPC provisioned before cluster creation
+
+✅ EKS cluster created using AWS CLI (not UI)
+
+✅ Cluster validation and lifecycle checks
+
+✅ kubeconfig generated via aws eks update-kubeconfig
+
+✅ End-to-end authentication flow:
+Local IAM credentials → temporary token → EKS API server
+
+---
 
 #  EKS Prerequisites:
-
 
 ### 1️⃣ Local machine:
 It can be any Linux distribution. You can check it with:
@@ -31,12 +57,15 @@ Check your version with:
 ```bash kubectl version ```
 
 Using a compatible kubectl version is important to avoid “version skew” issues. 
-While AWS does not require an exact version match, the official EKS documentation recommends keeping kubectl within the same minor version as the cluster — or at most one minor version above or below.
+While AWS does not require an exact version match, the official EKS documentation recommends keeping ```kubectl``` within the same minor version as the k8s cluster — or at most one minor version above or below.
 
 For example, if the EKS cluster is running Kubernetes 1.32, the recommended kubectl versions are 1.32, 1.31, or 1.33. 
 As a best practice, you should always update kubectl whenever you upgrade your EKS cluster to ensure full compatibility with the Kubernetes API.
 
-consult eks versions on : https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
+Check kubernetes version : [AWS list with Kubernetes versions](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html)
+
+Refer to the previous steps to [Install Local kubectl](https://github.com/tkeijock/k8s-eks-showcase/blob/main/docs/01-environment-setup.md#%EF%B8%8F-install-kubectl) 
+
 
 # EKS initialization
 
@@ -59,7 +88,6 @@ An Amazon EKS cluster requires a VPC as its underlying networking layer, and  EK
 To simplify and standardize this setup, AWS CloudFormation is used to provision the VPC and its associated resources through infrastructure-as-code templates.
 
 Cloud formation just need the template file that can be found here: 
-
 [AWS CloudFormation creating VPC with Templates (Official Links)](https://docs.aws.amazon.com/eks/latest/userguide/creating-a-vpc.html)
 
 I used this template: [IPv4 VPC template](https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml)
@@ -101,13 +129,17 @@ aws eks create-cluster \
 it can take around 12 ~ 15 min to create a cluster.
 
 
-### 4  Checking cluster 
+### 4️⃣  Checking cluster 
 useful commands
 
 ```
 aws eks list-cluster
 aws eks describe-cluster --name my-cluster | grep status
 ```
+After the cluster status becomes ACTIVE, run:
+
+The ```aws eks update-kubeconfig --name <cluster-name>``` command updates the local kubeconfig file so that kubectl can connect to the EKS cluster using IAM-based authentication.
+
 
 # EKS Remote control
 
@@ -120,12 +152,9 @@ Both approaches use the same mechanism: local IAM credentials are exchanged for 
 
 ### AWS CLI vs aws-iam-authenticator
 
-Each time you run a ```kubectl``` command, Kubernetes invokes the AWS CLI, which generates a temporary IAM authentication token. This token is then used to securely authenticate the request against the EKS API server.
+Each time you run a ```kubectl``` command, it invokes the AWS CLI credential plugin, which generates a temporary IAM token. This token is then used to securely authenticate the request against the EKS API server.
 
-test with : 
-
-```kubectl version``` 
-
+test with :  ```kubectl get nodes``` 
 
 ### aws-iam-authenticator
 
@@ -137,6 +166,6 @@ For compatibility with legacy clusters and existing automation, this repository 
 
  [AWS  EKS setup with instructions to setup IAM Authenticator](https://docs.aws.amazon.com/deep-learning-containers/latest/devguide/deep-learning-containers-eks-setup.html)
 
-The ```aws eks update-kubeconfig --name <cluster-name>``` command updates the local kubeconfig file so that kubectl can connect to the EKS cluster using IAM-based authentication.
+
 
 

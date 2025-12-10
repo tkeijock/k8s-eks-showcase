@@ -38,13 +38,10 @@ As a best practice, you should always update kubectl whenever you upgrade your E
 
 consult eks versions on : https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html
 
-
 # EKS initialization
 
 ### 1️⃣ IAM 
 AWS IAM (Identity and Acess Management) configuration is required because EKS relies entirely on IAM roles and policies to authorize cluster creation and API access.
-
-
 
 Creating a Role : Role > Create a Role > EKS
 
@@ -125,7 +122,7 @@ Both approaches use the same mechanism: local IAM credentials are exchanged for 
 
 Each time you run a ```kubectl``` command, Kubernetes invokes the AWS CLI, which generates a temporary IAM authentication token. This token is then used to securely authenticate the request against the EKS API server.
 
-teste with : 
+test with : 
 
 ```kubectl version``` 
 

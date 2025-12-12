@@ -6,14 +6,13 @@ This page serves as a guide for what needs to be removed in AWS when deleting th
 
 - my-eks-nodegroup
 
+### 2) minikube dev : 
 
-
-### 2) minikube dev : Stop and terminate
-
+- EC2 > Stop and terminate
 
 ### 3) cluster:
 
-EKS > Cluster > Delete
+- EKS > Cluster > Delete
 
 
 ### 4) Cloud formation  VPC  Stack

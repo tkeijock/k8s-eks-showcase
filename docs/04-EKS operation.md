@@ -49,8 +49,26 @@ Instead of manually retrieving the Node Instance Role ARN and configuring the aw
 injects it into the aws-auth ConfigMap template, and applies it to your cluster using kubectl. This saves time and reduces the chances of error, 
 automating a crucial step that would otherwise require manual intervention through the AWS Management Console and kubectl commands.
 
+## APP on EKS
+Intially the Dev enviroment was configured only one instance with minikube to provide a cluster, now on EKS running on multiple instances it is important to use a Loadbalancer in the cloud to distribute the traffic.
 
+to achive this, yaml file [service-fronted-eks.yaml](https://github.com/tkeijock/k8s-eks-showcase/blob/main/k8s/service-fronted-eks.yaml) 
+uses the parameter ``` type: LoadBalancer ```, instead of ```Nodeport``` that was used in the Development enviroment.
 
-## deploy APP
+When you create a Kubernetes Service of type LoadBalancer, Kubernetes delegates the creation of the external load balancer to the underlying cloud provider. Internally, the cluster first provisions the equivalent of a NodePort Service, and then the cloud-controller-manager configures an external load balancer that forwards traffic to that node port. Once provisioned, the load balancer’s details (such as its public IP or hostname) appear asynchronously in .status.loadBalancer. The external load balancer is fully managed by the cloud provider, which determines how incoming traffic is distributed to the worker nodes and ultimately to the Pods.. 
 
+### Deploy APP
+As mentioned above, the Service with loadbalancer is used. All the other Deployment and Service yamls are the same from the Dev enviroment and can be found in the repository. Here is the script to apply all of them with kubectl:
+
+[APP deploy with modified Service load balancer](https://raw.githubusercontent.com/tkeijock/k8s-eks-showcase/refs/heads/main/scripts/eks-deploy-guestbook.sh)
+ 
+on the local machine use:
+
+``` 
+curl -O https://raw.githubusercontent.com/tkeijock/k8s-eks-showcase/refs/heads/main/scripts/eks-deploy-guestbook.sh
+chmod +x eks-deploy-guestbook.sh
+./eks-deploy-guestbook.sh
 ```
+this uses kubectl apply on Deployments and Services yamls
+
+

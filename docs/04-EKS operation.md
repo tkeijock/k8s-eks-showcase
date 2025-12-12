@@ -73,4 +73,13 @@ chmod +x eks-deploy-guestbook.sh
 ```
 this uses kubectl apply on Deployments and Services yamls
 
+Get DNS public IP adress :
+``` kubectl get svc frontend -o wide ```
+
+## Scale
+test scale
+``` kubectl scale deploy frontend -- replicas=5 ```
+
+## Monitoring 
+
 

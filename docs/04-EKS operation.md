@@ -8,7 +8,7 @@ AWS provides a template to create nodegroup with cloud formation:
 
 Based on this yaml template i created a script using AWS CLI:
 
-[My Script to create Node Group for EKS](https://github.com/tkeijock/k8s-eks-showcase/blob/main/scripts/CF-create-nodegroup)
+[My Script to create Node Group for EKS](https://github.com/tkeijock/k8s-eks-showcase/blob/main/scripts/eks-create-nodegroup-cf.sh)
 
 Instead of checking VPC IDs, subnets, security groups, and other parameters by hand, 
 the script dynamically discovers all required resources based solely on the VPC name and injects them into the official EKS NodeGroup CloudFormation template. 
@@ -41,6 +41,7 @@ In this template
 Based on teh above template, i created a script using AWS CLI to apply  ``` aws-auth```:
 
 [My script to apply ``` aws-auth```](https://github.com/tkeijock/k8s-eks-showcase/blob/main/scripts/eks-apply-node-authorizer.sh)
+>The Script in the end apply ``` kubectl apply -f aws-auth-cm.yaml ```
 
 This script automates the process of creating the necessary ``` aws-auth``` ConfigMap for your Amazon EKS cluster, 
 which is required to associate your worker nodes with the cluster. 
@@ -49,5 +50,7 @@ injects it into the aws-auth ConfigMap template, and applies it to your cluster 
 automating a crucial step that would otherwise require manual intervention through the AWS Management Console and kubectl commands.
 
 
+
+## deploy APP
 
 ```

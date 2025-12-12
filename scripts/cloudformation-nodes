@@ -10,21 +10,24 @@
 # --- CloudFormation Template URL for Node Group ---
 TEMPLATE_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-12-10/amazon-eks-nodegroup.yaml"
   
-# --- Configuration Variables ---
+# --- Main Configuration Variables ---
 VPC_NAME="VPC-K8S"                    # VPC Tag NAME
-CLUSTER_NAME="my-cluster"            # EKS cluster name  
+CLUSTER_NAME="my-cluster"             # EKS cluster name  
+KEY_NAME="my-keypair"                 # EC2 KeyPair name to access nodes
 
-#VPC_ID=script by tag name            # VPC ID
+## --- Other Configuration Variables ---
 STACK_NAME="my-eks-nodegroup"         # CloudFormation stack name for the node group
-#SECURITY_GROUP=script                # Default security group ID for the VPC
 NODE_GROUP_NAME="my-nodegroup"        # Node group name
+INSTANCE_TYPE="t3.small"              # Force t3.small even if YAML default differs
+NODE_IMAGE_ID="ami-0440e4f6b9713faf6" # Specific AMI to use on EKS nodes
 MIN_SIZE=1
 DESIRED_SIZE=3
 MAX_SIZE=4
-INSTANCE_TYPE="t3.small"              # Force t3.small even if YAML default differs
-NODE_IMAGE_ID="ami-0440e4f6b9713faf6" # Specific AMI
-KEY_NAME="my-keypair"                 # EC2 KeyPair name to access nodes
+
+## --- Scripted Configuration Variables ---
+#VPC_ID=script by tag name            # VPC ID
 #SUBNET_IDS=script                    # Comma-separated list of public + private subnets
+#SECURITY_GROUP=script                # Default security group ID for the VPC
 
 # --- Get VPC ID by the tag name --- 
 VPC_ID=$(aws ec2 describe-vpcs \

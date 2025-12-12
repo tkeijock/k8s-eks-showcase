@@ -105,3 +105,17 @@ helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dash
  ```
 
 Kubectl will make Dashboard available at https://localhost:8443.
+
+### Details 
+
+[Guide: create a sample user](https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md)
+[Create admin-user-role.yaml](https://github.com/tkeijock/k8s-eks-showcase/blob/main/k8s/admin-user-role.yaml)
+``` 
+kubectl apply -f admin-user-role.yaml
+```
+
+get token :
+
+``` 
+kubectl -n kubernetes-dashboard create token admin-user
+```

@@ -55,7 +55,9 @@ Intially the Dev enviroment was configured only one instance with minikube to pr
 to achive this, yaml file [service-fronted-eks.yaml](https://github.com/tkeijock/k8s-eks-showcase/blob/main/k8s/service-fronted-eks.yaml) 
 uses the parameter ``` type: LoadBalancer ```, instead of ```Nodeport``` that was used in the Development enviroment.
 
-When you create a Kubernetes Service of type LoadBalancer, Kubernetes delegates the creation of the external load balancer to the underlying cloud provider. Internally, the cluster first provisions the equivalent of a NodePort Service, and then the cloud-controller-manager configures an external load balancer that forwards traffic to that node port. Once provisioned, the load balancer’s details (such as its public IP or hostname) appear asynchronously in .status.loadBalancer. The external load balancer is fully managed by the cloud provider, which determines how incoming traffic is distributed to the worker nodes and ultimately to the Pods.. 
+When you create a Kubernetes Service of type LoadBalancer, Kubernetes delegates the creation of the external load balancer to the cloud provider. Internally, the cluster first provisions the equivalente of a NodePort service, and then the cloud-controller-manager uses the cloud API to configures an external load balancer (in the cloud) that forwards traffic to that node port. 
+
+In Amazon EKS, the AWS cloud-controller-manager automatically provisions an external load balancer fully managed by AWS called ``` AWS-managed Load Balancer ```, assigns it a public IP or DNS name, and updates the Service’s .status.loadBalancer field asynchronously as the resource becomes available. All external traffic is routed through this AWS Load Balancer to the worker nodes and then to the application Pods, allowing the application to be accessed directly through a fully managed, cloud-native entry point.
 
 ### Deploy APP
 As mentioned above, the Service with loadbalancer is used. All the other Deployment and Service yamls are the same from the Dev enviroment and can be found in the repository. Here is the script to apply all of them with kubectl:

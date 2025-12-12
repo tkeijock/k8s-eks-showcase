@@ -82,4 +82,26 @@ test scale
 
 ## Monitoring 
 
+Deploy the web UI (Kubernetes Dashboard):
+[Dashboard APP : Oficial Kubernetes Guide](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
 
+the oficial site explicit says that need to use Helm to install the dash board, and this can be done using Helm oficial script and oficial commands to install the dash boar.
+commands to update local machine and install Helm:
+```
+# --- Prepare Ubuntu ---
+sudo apt-get update
+sudo apt-get install -y curl apt-transport-https
+
+# --- Install Helm 3 using the official script ---
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# --- Add Kubernetes Dashboard Helm repository ---
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update
+
+# --- Deploy Kubernetes Dashboard in its namespace ---
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+  --create-namespace --namespace kubernetes-dashboard
+ ```
+
+Kubectl will make Dashboard available at https://localhost:8443.

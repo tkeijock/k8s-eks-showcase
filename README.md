@@ -47,10 +47,21 @@ For details on how this application is deployed in a cloud-aligned development e
 ---
 This repository is organized into separate guides to keep the workflow clear and structured:
 
-- ** Dev: Environment Setup (EC2, Docker, Kubectl, Minikube)**  
+- **Dev: Environment Setup (EC2, Docker, Kubectl, Minikube)**  
   👉 [docs/01-environment-setup.md](docs/01-environment-setup.md)
-- **Dev: Demo Application Deployment (Redis + Dashboard)**  
-  👉 [docs/02-demo-app-deploy.md](docs/02-demo-app-deploy.md)
+  
+- **Dev: Demo Application Deployment (Redis + Dashboard)**
+  
+   👉 [docs/02-demo-app-deploy.md](docs/02-demo-app-deploy.md)
+  
+- **Prod:  Accessing Amazon EKS cluster from a local machine.**
+   👉 [docs/03-enviroment-setup-eks.md](docs/03-enviroment-setup-eks.md)
+  
+- **Prod: Accessing Amazon EKS cluster from a local machine.**
+  👉 [docs/04-EKS operation.md](docs/04-EKS operation.md)
+  
+- **Prod: Guide to delete EKS AWS cluster and all its components** 
+ 👉 [docs/05-Removing AWs Components.md](docs/05-Removing AWs Components.md)
 
 
 

@@ -6,7 +6,7 @@ The goal is not just to store notes, but to provide a structured guide that allo
 
 All configurations are first validated in a lightweight local cluster using Minikube before being deployed to EKS, ensuring a smooth development-to-production workflow.
 
-This repository is based on the Alura course on Kubernetes and AWS EKS, where I learned the fundamentals and best practices. Here, I have added my own analyses, observations, and experiments to deepen my understanding and track my learning journey.
+This repository builds upon the Alura course on Kubernetes and AWS EKS, where I learned the foundational concepts and best practices. I have complemented the course material with my own analyses, insights, and experiments, turning this repository into a personal reference that reflects both the official guidance and my practical learning journey.
 
 # 🏗️ Architecture Overview
 
@@ -49,21 +49,20 @@ For details on how this application is deployed in a cloud-aligned development e
 ---
 This repository is organized into separate guides to keep the workflow clear and structured:
 
-- **Dev: Environment Setup (EC2, Docker, Kubectl, Minikube)**  
+- **(Dev) Environment Setup (EC2, Docker, Kubectl, Minikube)**
   👉 [docs/01-environment-setup.md](docs/01-environment-setup.md)
   
-- **Dev: Demo Application Deployment (Redis + Dashboard)**
+- **(Dev) Demo Application Deployment (Redis + Dashboard)**
+  👉 [docs/02-demo-app-deploy.md](docs/02-demo-app-deploy.md)
   
-   👉 [docs/02-demo-app-deploy.md](docs/02-demo-app-deploy.md)
+- **(Prod)  Accessing Amazon EKS cluster from a local machine.**
+  👉 [docs/03-enviroment-setup-eks.md](docs/03-enviroment-setup-eks.md)
   
-- **Prod:  Accessing Amazon EKS cluster from a local machine.**
-   👉 [docs/03-enviroment-setup-eks.md](docs/03-enviroment-setup-eks.md)
+- **(Prod) Accessing Amazon EKS cluster from a local machine.**
+  👉 [docs/04-EKS operation.md](docs/04-EKS-operation.md)
   
-- **Prod: Accessing Amazon EKS cluster from a local machine.**
-  👉 [docs/04-EKS operation.md](docs/04-EKS operation.md)
-  
-- **Prod: Guide to delete EKS AWS cluster and all its components** 
- 👉 [docs/05-Removing AWs Components.md](docs/05-Removing AWs Components.md)
+- **(Prod) Guide to delete EKS AWS cluster and all its components**
+👉 [docs/05-Removing AWs Components.md](docs/05-Removing-AWs-Components.md)
 
 
 

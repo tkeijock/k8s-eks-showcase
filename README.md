@@ -6,6 +6,8 @@ The goal is not just to store notes, but to provide a structured guide that allo
 
 All configurations are first validated in a lightweight local cluster using Minikube before being deployed to EKS, ensuring a smooth development-to-production workflow.
 
+This repository is based on the Alura course on Kubernetes and AWS EKS, where I learned the fundamentals and best practices. Here, I have added my own analyses, observations, and experiments to deepen my understanding and track my learning journey.
+
 # 🏗️ Architecture Overview
 
 ## EKS overview

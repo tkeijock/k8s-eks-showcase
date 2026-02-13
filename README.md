@@ -59,10 +59,10 @@ This repository is organized into separate guides to keep the workflow clear and
   👉 [docs/03-enviroment-setup-eks.md](docs/03-enviroment-setup-eks.md)
   
 - **(Prod) Accessing Amazon EKS cluster from a local machine.**
-  👉 [docs/04-EKS operation.md](docs/04-EKS-operation.md)
+  👉 [docs/04-EKS-operation.md](docs/04-EKS-operation.md)
   
 - **(Prod) Guide to delete EKS AWS cluster and all its components**
-👉 [docs/05-Removing AWs Components.md](docs/05-Removing-AWs-Components.md)
+👉 [docs/05-Removing-AWs-Components.md](docs/05-Removing-AWs-Components.md)
 
 
 
